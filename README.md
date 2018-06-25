@@ -43,7 +43,7 @@ The rest of the code is properly commented and self explanatory. Tweaks can be m
 
 * **Rajat Dipta Biswas** - *Initial work*
 
-See also the list of [contributors](https://github.com/rajatdiptabiswas/ethereum-dapp-vote/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/rajatdiptabiswas/snake-pygame/graphs/contributors) who participated in this project.
 
 ## Acknowledgments
 * [Pygame Documentations](https://www.pygame.org/docs/)
