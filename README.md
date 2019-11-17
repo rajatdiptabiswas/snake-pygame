@@ -45,6 +45,6 @@ The rest of the code is properly commented and self explanatory. Tweaks can be m
 
 See also the list of [contributors](https://github.com/rajatdiptabiswas/snake-pygame/graphs/contributors) who participated in this project.
 
-## Acknowledgments
+## Acknowledgements
 * [Pygame Documentations](https://www.pygame.org/docs/)
 * [Udemy: Python Game Development](https://www.udemy.com/python-game-development-creating-a-snake-game-from-scratch/learn/v4/overview)
