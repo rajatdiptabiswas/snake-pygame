@@ -24,14 +24,20 @@ The rest of the code is properly commented and self explanatory. Tweaks can be m
 
 ## Screenshots
 
-![1](https://user-images.githubusercontent.com/32998741/33873439-27f635b2-df45-11e7-8fc1-f7812f17447a.png)
-*Written using PyCharm*
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32998741/33873439-27f635b2-df45-11e7-8fc1-f7812f17447a.png" width="600" title="GamePlay">
+</p>
+<p align="center"> <i> Fig.1 Written using PyCharm </i> </p>
 
-![2](https://user-images.githubusercontent.com/32998741/33873437-2780ed2a-df45-11e7-9776-b1f151fa4e02.png)
-*Active game screen*
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32998741/33873437-2780ed2a-df45-11e7-9776-b1f151fa4e02.png" width="600" title="Active Game Screen">
+</p>
+<p align="center"> <i> Fig.2 Active game screen </i> </p>
 
-![3](https://user-images.githubusercontent.com/32998741/33873440-28647360-df45-11e7-8291-b82d5646352f.png)
-*Game over screen*
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32998741/33873440-28647360-df45-11e7-8291-b82d5646352f.png" width="600" title="Active Game Screen">
+</p>
+<p align="center"> <i> Fig.3 Game over screen </i> </p>
 
 
 ## Prerequisites
