@@ -40,6 +40,7 @@ white = pygame.Color(255, 255, 255)
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
+magenta  = pygame.Color(255,0,255)
 
 
 # FPS (frames per second) controller
@@ -143,11 +144,17 @@ while True:
 
     # GFX
     game_window.fill(black)
+    body_part = 0
     for pos in snake_body:
         # Snake body
         # .draw.rect(play_surface, color, xy-coordinate)
         # xy-coordinate -> .Rect(x, y, size_x, size_y)
-        pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
+        if body_part == 0:
+            pygame.draw.rect(game_window, magenta, pygame.Rect(pos[0], pos[1], 10, 10))
+        else:
+            pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
+        
+        body_part += 1
 
     # Snake food
     pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
