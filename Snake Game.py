@@ -3,11 +3,16 @@ Snake Eater
 Made with PyGame
 """
 
-import pygame, sys, time, random
+import pygame, sys, time, random, argparse
 
+
+parser = argparse.ArgumentParser(description='Arguments for Snake Game')
+
+parser.add_argument('difficulty', type=int, help='Choose difficulty level -- (Easy: 10) (Medium: 25) (Hard: 40) (Harder: 60) (Impossible: 120)')
+
+args = parser.parse_args()
 
 clock = pygame.time.Clock()
-
 
 # Difficulty settings
 # Easy      ->  10
@@ -15,7 +20,7 @@ clock = pygame.time.Clock()
 # Hard      ->  40
 # Harder    ->  60
 # Impossible->  120
-difficulty = 25
+difficulty = args.difficulty
 
 # Window size
 frame_size_x = 720
