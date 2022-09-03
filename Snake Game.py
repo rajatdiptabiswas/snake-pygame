@@ -6,6 +6,9 @@ Made with PyGame
 import pygame, sys, time, random
 
 
+clock = pygame.time.Clock()
+
+
 # Difficulty settings
 # Easy      ->  10
 # Medium    ->  25
@@ -73,6 +76,28 @@ def game_over():
     pygame.quit()
     sys.exit()
 
+def pause():
+    loop = 1
+    my_font = pygame.font.SysFont('times new roman', 90)
+    game_over_surface = my_font.render('PAUSED', True, blue)
+    game_over_rect = game_over_surface.get_rect()
+    game_over_rect.midtop = (frame_size_x/2, frame_size_y/4)
+    game_window.fill(black)
+    game_window.blit(game_over_surface, game_over_rect)
+
+    while loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = 0
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    loop = 0
+                if event.key == pygame.K_SPACE:
+                    game_window.fill((0, 0, 0))
+                    loop = 0
+        pygame.display.update()
+        # screen.fill((0, 0, 0))
+        clock.tick(60)
 
 # Score
 def show_score(choice, color, font, size):
@@ -107,6 +132,11 @@ while True:
             # Esc -> Create event to quit the game
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+            if event.key == pygame.K_SPACE:
+                pause()
+
+                # pygame.event.post(pygame.event.Event(pygame.PAUSE))
 
     # Making sure the snake cannot move in the opposite direction instantaneously
     if change_to == 'UP' and direction != 'DOWN':
