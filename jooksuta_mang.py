@@ -2,11 +2,11 @@ from Snake_Game import *
 from FF_narvivork import *
 
 def jooksuta_mang_AI(game_window, fps_controller, weights):
+    global wall_body
     max_score = 0
-    avg_score = 0
     test_mange = 1
     score1 = 0
-    samme_mangu_kohta = 1000
+    samme_mangu_kohta = 250
     score2 = 0
 
     for _ in range(test_mange):
@@ -20,7 +20,6 @@ def jooksuta_mang_AI(game_window, fps_controller, weights):
                 snake_body)
             nurk, ussi_suuna_siht, toidu_suuna_siht_normaliseeritud, ussi_suuna_siht_normaliseeritud = get_nurk_toiduga(
                 snake_body, food_pos)
-            ennustused = []
             ennustatud_suund = np.argmax(np.array(forward_propagation(np.array(
                 [on_vasakul_blokk, on_ees_blokk, on_paremal_blokk, toidu_suuna_siht_normaliseeritud[0],
                  ussi_suuna_siht_normaliseeritud[0], toidu_suuna_siht_normaliseeritud[1],
@@ -42,7 +41,8 @@ def jooksuta_mang_AI(game_window, fps_controller, weights):
 
             jargmine_samm = snake_body[0] + hetke_suuna_siht
             if aare_puutumine(snake_body[0]) == 1 or \
-                    enda_puutumine(jargmine_samm.tolist(), snake_body) == 1:
+                    enda_puutumine(jargmine_samm.tolist(), snake_body) == 1 or \
+                    seina_puutumine(jargmine_samm, wall_body):
                 score1 += -150
                 break
 
