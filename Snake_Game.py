@@ -249,7 +249,7 @@ def mangi(snake_pos, snake_body, food_pos, liikumissuund, score, game_window, fp
         naita_seina(wall_body, game_window)
 
         snake_body, food_pos, score = ussi_funktsioonid(snake_pos, snake_body, food_pos, score, liikumissuund)
-        pygame.display.set_caption("SCORE: " + str(score))
+        pygame.display.set_caption(str(score))
         pygame.display.update()
         fps_controller.tick(difficulty)
 
