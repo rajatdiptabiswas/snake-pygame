@@ -1,42 +1,45 @@
-import random
+from jooksuta_mang import *
+from random import choice, randint
 
-class Individuaal:
-    def __init__(self, sequence, mutation_rate):
-        self.sequence = sequence
-        self.mutation_rate = mutation_rate
-        self.fitness = 0
+def arvuta_populatsiooni_fitness(pop): # pop - populatsioon
+    fitness = []
+    for i in range(pop.shape[0]):
+        fit = jooksuta_mang_AI(game_window, fps_controller, pop[i])
+        print('Kromosoomi fitness väärtus ' + str(i) + ' :  ', fit)
+        fitness.append(fit)
+    return np.array(fitness)
 
-    def mutate(self):
-        for i in range(len(self.sequence)):
-            if random.random() <= self.mutation_rate:
-                self.sequence[i] = random.choice(["UP", "DOWN", "LEFT", "RIGHT"])
+def vali_sigimis_hulk(pop, fitness, arv_vanemaid):
+    vanemad = np.empty((arv_vanemaid, pop.shape[1]))
+    for vanema_nr in range(arv_vanemaid):
+        max_fitness_idx = np.where(fitness == np.max(fitness))
+        max_fitness_idx = max_fitness_idx[0][0]
+        vanemad[vanema_nr, :] = pop[max_fitness_idx, :]
+        fitness[max_fitness_idx] = -99999999
+    return vanemad
 
-    def crossover(self, partner):
-        # Create a new child individual
-        child = Individuaal(self.sequence.copy(), self.mutation_rate)
+def crossover(vanemad, jarglase_suurus):
+    jarglased = np.empty(jarglase_suurus)
 
-        # Choose a random crossover point
-        crossover_point = random.randint(0, len(self.sequence))
+    for k in range(jarglased[0]):
 
-        # Swap genetic material between parents at the crossover point
-        child.sequence[crossover_point:] = partner.sequence[crossover_point:]
+        while True:
+            parent1_idx = random.randint(0, vanemad.shape[0] - 1)
+            parent2_idx = random.randint(0, vanemad.shape[0] - 1)
+            # produce offspring from two parents if they are different
+            if parent1_idx != parent2_idx:
+                for j in range(jarglase_suurus[1]):
+                    if random.uniform(0, 1) < 0.5:
+                        jarglased[k, j] = vanemad[parent1_idx, j]
+                    else:
+                        jarglased[k, j] = vanemad[parent2_idx, j]
+                break
+    return jarglased
 
-        return child
-
-    def evaluate_fitness(self, score):
-        self.fitness = score  # Assign the score as the fitness value
-
-    def __repr__(self):
-        return f"Actions: {self.sequence}, Fitness: {self.fitness}"
-
-    def get_next_move(self, current_direction):
-        # Determine the valid moves based on the current direction
-        if current_direction == 'UP' or current_direction == 'DOWN':
-            valid_moves = ['LEFT', 'RIGHT']
-        else:
-            valid_moves = ['UP', 'DOWN']
-
-        # Choose the next move from the valid moves
-        next_move = random.choice(valid_moves)
-
-        return next_move
+def mutatsioon(jarglaste_crossover, mutatsiooni_intensiivsus):
+    for idx in range(jarglaste_crossover.shape[0]):
+        for i in range(jarglaste_crossover.shape[1]):
+            if random.uniform(0, 1) < mutatsiooni_intensiivsus:
+                random_value = np.random.choice(np.arange(-1, 1, step = 0.001), size = (1), replace = False)
+                jarglaste_crossover[idx, i] = jarglaste_crossover[idx, i] + random_value
+    return jarglaste_crossover
