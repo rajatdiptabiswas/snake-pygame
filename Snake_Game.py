@@ -46,38 +46,6 @@ pygame.display.set_caption('Snake Eater') # Pealkiri
 game_window = pygame.display.set_mode((frame_size_x, frame_size_y)) # Aken
 fps_controller = pygame.time.Clock() # Akna kaadrisagedus
 
-def naita_ussi(snake_body, game_window):
-    for body_pos in snake_body:
-        # Snake body
-        # .draw.rect(play_surface, color, xy-coordinate)
-        # xy-coordinate -> .Rect(x, y, size_x, size_y)
-        pygame.draw.rect(game_window, green, pygame.Rect(body_pos[0], body_pos[1], 10, 10))
-
-def naita_toitu(food_pos, game_window):
-    # Snake food
-    pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
-
-def alustamispositsioonid():
-    global block_size, wall_length
-    # Game variables
-    snake_pos = [30, 30]
-    snake_body = [[30, 30], [30-10, 30], [30-(2*10), 30]]
-
-    food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
-    # food_spawn = True
-
-    # direction = 'RIGHT'
-    # change_to = direction
-
-    score = 0
-
-    #wall_body = koosta_sein(snake_body)
-
-    return snake_pos, snake_body, food_pos, score #direction#, wall_body
-
-def kaugus_toidust(food_pos, snake_pos):
-    return np.linalg.norm(np.array(food_pos) - np.array(snake_pos))
-
 def koosta_sein(snake_body):
     global frame_size_x, frame_size_y, wall_length
     # Seina lisamine
@@ -107,6 +75,43 @@ def koosta_sein(snake_body):
             wall_body.append(wall)
 
     return wall_body
+
+wall_body = koosta_sein([[30, 30], [30-10, 30], [30-(2*10), 30]])
+
+def naita_ussi(snake_body, game_window):
+    for body_pos in snake_body:
+        # Snake body
+        # .draw.rect(play_surface, color, xy-coordinate)
+        # xy-coordinate -> .Rect(x, y, size_x, size_y)
+        pygame.draw.rect(game_window, green, pygame.Rect(body_pos[0], body_pos[1], 10, 10))
+
+def naita_toitu(food_pos, game_window):
+    # Snake food
+    pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
+
+def naita_seina(wall_body, game_window):
+    for pos in wall_body:
+        pygame.draw.rect(game_window, red, pygame.Rect(pos[0], pos[1], 10, 10))
+
+def alustamispositsioonid():
+    global wall_body
+    global block_size, wall_length
+    # Game variables
+    snake_pos = [30, 30]
+    snake_body = [[30, 30], [30-10, 30], [30-(2*10), 30]]
+
+    food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
+    # food_spawn = True
+
+    # direction = 'RIGHT'
+    # change_to = direction
+
+    score = 0
+
+    return snake_pos, snake_body, food_pos, score #direction#, wall_body
+
+def kaugus_toidust(food_pos, snake_pos):
+    return np.linalg.norm(np.array(food_pos) - np.array(snake_pos))
 
 def ussi_funktsioonid(snake_pos, snake_body, food_pos, score, direction):
     # Moving the snake
@@ -158,10 +163,10 @@ def seina_puutumine(snake_pos, wall_body):
     return False
 
 def suund_blokeeritud(snake_body, hetke_suuna_siht):
-    print(snake_body[0], hetke_suuna_siht)
+    global wall_body
     jargmine_samm = snake_body[0] + hetke_suuna_siht
     snake_pos = snake_body[0]
-    if aare_puutumine(jargmine_samm) or enda_puutumine(jargmine_samm.tolist(), snake_body): # TODO: Seina puutumine
+    if aare_puutumine(jargmine_samm) or enda_puutumine(jargmine_samm.tolist(), snake_body) or seina_puutumine(jargmine_samm, wall_body): # TODO: Seina puutumine
         return True
     else:
         return False
@@ -240,7 +245,8 @@ def genereeri_suvaline_siht(snake_body, nurk_toiduga):
 
     return suuna_siht(snake_body, nurk_toiduga, suund)
 
-def mangi(snake_pos, snake_body, food_pos, liikumissuund, score, game_window, fps_controller): # TODO: SEIN
+def mangi(snake_pos, snake_body, food_pos, liikumissuund, score, game_window, fps_controller):
+    global wall_body
     crashed = False
     while crashed is not True:
         for event in pygame.event.get():
@@ -250,6 +256,7 @@ def mangi(snake_pos, snake_body, food_pos, liikumissuund, score, game_window, fp
 
         naita_toitu(food_pos, game_window)
         naita_ussi(snake_body, game_window)
+        naita_seina(wall_body, game_window)
 
         snake_body, food_pos, score = ussi_funktsioonid(snake_pos, snake_body, food_pos, score, liikumissuund)
         pygame.display.set_caption("SCORE: " + str(score))

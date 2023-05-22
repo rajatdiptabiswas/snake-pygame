@@ -21,7 +21,7 @@ def vali_sigimis_hulk(pop, fitness, arv_vanemaid):
 def crossover(vanemad, jarglase_suurus):
     jarglased = np.empty(jarglase_suurus)
 
-    for k in range(jarglased[0]):
+    for k in range(jarglase_suurus[0]):
 
         while True:
             parent1_idx = random.randint(0, vanemad.shape[0] - 1)

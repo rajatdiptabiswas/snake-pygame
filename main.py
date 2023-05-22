@@ -10,14 +10,14 @@ import time
 
 # hyperparameters
 # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
-sol_per_pop = 50
-num_generations = 100
-crossover_percentage = 0.2
-mutation_intensity = 0.01
+sol_per_pop = 25
+generatsioonide_arv = 100
+crossover_protsent = 0.2
+mutatsiooni_intensiivsus = 0.05
 
 datetimeCurr = str(time.strftime("%Y%m%d-%H%M%S"))
 
-num_parents_mating = (int)(crossover_percentage * sol_per_pop)  # has to be even
+num_parents_mating = (int)(crossover_protsent * sol_per_pop)  # has to be even
 num_weights = n_x * n_h + n_h * n_h2 + n_h2 * n_y
 max_fitness = []
 
@@ -27,7 +27,7 @@ pop_size = (sol_per_pop, num_weights)
 new_population = np.random.choice(np.arange(-1, 1, step=0.01), size=pop_size, replace=True)
 
 
-for generation in range(num_generations):
+for generation in range(generatsioonide_arv):
     print('##############        GENERATION ' + str(generation)+ '  ###############' )
 
     # Measuring the fitness of each chromosome in the population.
@@ -38,11 +38,11 @@ for generation in range(num_generations):
     # Selecting the best parents in the population for mating.
     parents = vali_sigimis_hulk(new_population, fitness, num_parents_mating)
     # Generating next generation using crossover.
-    offspring_crossover = crossover(parents, offspring_size=(pop_size[0] - parents.shape[0], num_weights))
+    offspring_crossover = crossover(parents, jarglase_suurus=(pop_size[0] - parents.shape[0], num_weights))
     # Adding some variations to the offsrping using mutation.
-    offspring_mutation = mutatsioon(offspring_crossover, mutation_intensity)
+    offspring_mutation = mutatsioon(offspring_crossover, mutatsiooni_intensiivsus)
     # Creating the new population based on the parents and offspring.
     new_population[0:parents.shape[0], :] = parents
     new_population[parents.shape[0]:, :] = offspring_mutation
 
-gen_count = list(range(1, num_generations + 1))
+gen_count = list(range(1, generatsioonide_arv + 1))
