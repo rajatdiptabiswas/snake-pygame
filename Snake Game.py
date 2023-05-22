@@ -5,7 +5,6 @@ Made with PyGame
 
 import pygame, sys, time, random
 
-
 # Difficulty settings
 # Easy      ->  10
 # Medium    ->  25
@@ -47,8 +46,8 @@ fps_controller = pygame.time.Clock()
 
 
 # Game variables
-snake_pos = [100, 50]
-snake_body = [[100, 50], [100-10, 50], [100-(2*10), 50]]
+snake_pos = [30, 30]
+snake_body = [[30, 30], [30-10, 30], [30-(2*10), 30]]
 
 food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
 food_spawn = True
@@ -59,9 +58,38 @@ change_to = direction
 score = 0
 
 
+# Seina lisamine
+block_size = 10
+wall_length = 10 # Seina pikkus - 10 ühiku võrra suureneb
+wall_body = []
+wall_in_snake = True
+
+while wall_in_snake:
+    still_wall_in_snake = False
+    wall_pos = random.randrange(50, frame_size_x - (wall_length * 10) + 1, 10)
+    for pos in snake_body:
+        if wall_pos == pos[0] or wall_pos == pos[1]:
+            still_wall_in_snake = True
+            break
+    if not still_wall_in_snake:
+        wall_in_snake = False
+
+wall_direction = random.choice(["row", "column"])
+if wall_direction == "row":
+    for i in range(wall_length):
+        value = i*block_size
+        wall = [wall_pos+value, wall_pos]
+        wall_body.append(wall)
+else:
+    for i in range(wall_length):
+        value = i*block_size
+        wall = [wall_pos, wall_pos+value]
+        wall_body.append(wall)
+
+
 # Game Over
 def game_over():
-    my_font = pygame.font.SysFont('times new roman', 90)
+    my_font = pygame.font.SysFont('times new roman', 26)
     game_over_surface = my_font.render('YOU DIED', True, red)
     game_over_rect = game_over_surface.get_rect()
     game_over_rect.midtop = (frame_size_x/2, frame_size_y/4)
@@ -80,7 +108,7 @@ def show_score(choice, color, font, size):
     score_surface = score_font.render('Score : ' + str(score), True, color)
     score_rect = score_surface.get_rect()
     if choice == 1:
-        score_rect.midtop = (frame_size_x/10, 15)
+        score_rect.midtop = (frame_size_x/4, 5)
     else:
         score_rect.midtop = (frame_size_x/2, frame_size_y/1.25)
     game_window.blit(score_surface, score_rect)
@@ -137,9 +165,16 @@ while True:
         snake_body.pop()
 
     # Spawning food on the screen
-    if not food_spawn:
-        food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
-    food_spawn = True
+    # Ei lisa sööki seina sisse
+    while not food_spawn:
+        still_in_wall = False
+        food_pos = [random.randrange(1, (frame_size_x // 10)) * 10, random.randrange(1, (frame_size_y // 10)) * 10]
+        for pos in wall_body:
+            if food_pos[0] == pos[0] and food_pos[1] == pos[1]:
+                still_in_wall = True
+                break
+        if not still_in_wall:
+            food_spawn = True
 
     # GFX
     game_window.fill(black)
@@ -152,7 +187,16 @@ while True:
     # Snake food
     pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
 
+    # Sein
+    for pos in wall_body:
+        pygame.draw.rect(game_window, red, pygame.Rect(pos[0], pos[1], 10, 10))
+
     # Game Over conditions
+    # Seina vastu
+    for block in wall_body:
+        if snake_pos[0] == block[0] and snake_pos[1] == block[1]:
+            game_over()
+
     # Getting out of bounds
     if snake_pos[0] < 0 or snake_pos[0] > frame_size_x-10:
         game_over()
