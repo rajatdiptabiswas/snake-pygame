@@ -55,13 +55,18 @@ fps_controller = pygame.time.Clock()
 
 
 # Game variables
-snake_pos = [100, 50]
+snake_pos = [400, 200]
 snake_body = [[100, 50], [100-10, 50], [100-(2*10), 50]]
 
 food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
 food_spawn = True
 
+bullet_pos = [-1, -1]
+bullet_spawn = False
+
+
 direction = 'RIGHT'
+bullet_direction = ''
 change_to = direction
 
 score = 0
@@ -110,7 +115,7 @@ def show_score(choice, color, font, size):
     score_surface = score_font.render('Score : ' + str(score), True, color)
     score_rect = score_surface.get_rect()
     if choice == 1:
-        score_rect.midtop = (frame_size_x/10, 15)
+        score_rect.midtop = (frame_size_x/2, frame_size_y/2)
     else:
         score_rect.midtop = (frame_size_x/2, frame_size_y/1.25)
     game_window.blit(score_surface, score_rect)
@@ -138,10 +143,27 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
 
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_p:
                 pause()
 
-                # pygame.event.post(pygame.event.Event(pygame.PAUSE))
+            if event.key == pygame.K_SPACE:
+                bullet_spawn = True
+                if direction == 'UP':
+                    bullet_pos[0] = snake_pos[0]
+                    bullet_pos[1] = snake_pos[1] - 20
+                    bullet_direction = 'UP'
+                if direction == 'DOWN':
+                    bullet_pos[0] = snake_pos[0]
+                    bullet_pos[1] = snake_pos[1] + 20
+                    bullet_direction = 'DOWN'
+                if direction == 'LEFT':
+                    bullet_pos[0] = snake_pos[0] - 20
+                    bullet_pos[1] = snake_pos[1]
+                    bullet_direction = 'LEFT'
+                if direction == 'RIGHT':
+                    bullet_pos[0] = snake_pos[0] + 20
+                    bullet_pos[1] = snake_pos[1]    
+                    bullet_direction = 'RIGHT'  
 
     # Making sure the snake cannot move in the opposite direction instantaneously
     if change_to == 'UP' and direction != 'DOWN':
@@ -163,9 +185,18 @@ while True:
     if direction == 'RIGHT':
         snake_pos[0] += 10
 
+    if bullet_direction == 'UP':
+        bullet_pos[1] -= 10
+    if bullet_direction == 'DOWN':
+        bullet_pos[1] += 10
+    if bullet_direction == 'LEFT':
+        bullet_pos[0] -= 10
+    if bullet_direction == 'RIGHT':
+        bullet_pos[0] += 10
+
     # Snake body growing mechanism
     snake_body.insert(0, list(snake_pos))
-    if snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]:
+    if (snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]) or (bullet_pos[0] == food_pos[0] and bullet_pos[1] == food_pos[1]):
         score += 1
         food_spawn = False
     else:
@@ -186,6 +217,10 @@ while True:
 
     # Snake food
     pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
+    
+    # Draw Bullet
+    if bullet_spawn:
+        pygame.draw.rect(game_window, red, pygame.Rect(bullet_pos[0], bullet_pos[1], 10, 10))
 
     # Game Over conditions
     # Getting out of bounds
@@ -193,12 +228,18 @@ while True:
         game_over()
     if snake_pos[1] < 0 or snake_pos[1] > frame_size_y-10:
         game_over()
+
+    if bullet_pos[0] < 0 or bullet_pos[0] > frame_size_x-10:
+        bullet_spawn = False
+    if bullet_pos[1] < 0 or bullet_pos[1] > frame_size_y-10:
+        bullet_spawn = False
+
     # Touching the snake body
     for block in snake_body[1:]:
         if snake_pos[0] == block[0] and snake_pos[1] == block[1]:
             game_over()
 
-    show_score(1, white, 'consolas', 20)
+    # show_score(1, white, 'consolas', 20)
     # Refresh game screen
     pygame.display.update()
     # Refresh rate
