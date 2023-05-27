@@ -18,7 +18,7 @@ Download the source code from the repository and run the file just as any other 
 python3 Snake\ Game.py <difficulty>
 ```
 
-<difficulty> is a parameter that changes the tick rate of the game. If you have a higher difficulty, the tick rate increases, and consequently the snakes get faster, which makes the game more difficult. 
+`<difficulty>` is a parameter that changes the tick rate of the game. If you have a higher difficulty, the tick rate increases, and consequently the snakes get faster, which makes the game more difficult. 
 
 ## Prerequisites
 * [Python](https://www.python.org)
