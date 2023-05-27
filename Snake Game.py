@@ -48,6 +48,7 @@ white = pygame.Color(255, 255, 255)
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
+yellow = pygame.Color(255, 255, 0)
 
 
 # FPS (frames per second) controller
@@ -56,7 +57,7 @@ fps_controller = pygame.time.Clock()
 
 # Game variables
 snake_pos = [400, 200]
-snake_body = [[100, 50], [100-10, 50], [100-(2*10), 50]]
+snake_body = [[0, 0], [0, 0], [0, 0]]
 
 food_pos = [random.randrange(1, (frame_size_x//10)) * 10, random.randrange(1, (frame_size_y//10)) * 10]
 food_spawn = True
@@ -64,18 +65,27 @@ food_spawn = True
 bullet_pos = [-1, -1]
 bullet_spawn = False
 
+snake2_pos = [0, 0]
+snake2_body = [[0, 0], [0, 0], [0, 0]]
+
+bullet2_pos = [-1, -1]
+bullet2_spawn = False
 
 direction = 'RIGHT'
+direction2 = 'RIGHT'
 bullet_direction = ''
+bullet2_direction = ''
 change_to = direction
+change_to2 = direction2
 
-score = 0
+snake_1_score = 0
+snake_2_score = 0
 
 
 # Game Over
 def game_over():
     my_font = pygame.font.SysFont('times new roman', 90)
-    game_over_surface = my_font.render('YOU DIED', True, red)
+    game_over_surface = my_font.render('GAME OVER', True, red)
     game_over_rect = game_over_surface.get_rect()
     game_over_rect.midtop = (frame_size_x/2, frame_size_y/4)
     game_window.fill(black)
@@ -112,14 +122,19 @@ def pause():
 # Score
 def show_score(choice, color, font, size):
     score_font = pygame.font.SysFont(font, size)
-    score_surface = score_font.render('Score : ' + str(score), True, color)
+    score_surface = score_font.render('Snake 1 Score : ' + str(snake_1_score), True, color)
+    score2_surface = score_font.render('Snake 2 Score : ' + str(snake_2_score), True, color)
     score_rect = score_surface.get_rect()
+    score2_rect = score2_surface.get_rect()
     if choice == 1:
-        score_rect.midtop = (frame_size_x/2, frame_size_y/2)
+        score_rect.midtop = (frame_size_x/7, 15)
+        score2_rect.midtop = (frame_size_x/7, 35)
     else:
-        score_rect.midtop = (frame_size_x/2, frame_size_y/1.25)
+        score_rect.midtop = (frame_size_x/2, (frame_size_y/1.25) - 20)
+        score2_rect.midtop = (frame_size_x/2, frame_size_y/1.25)
+    # game_window.blit(score2_surface, score2_rect)
     game_window.blit(score_surface, score_rect)
-    # pygame.display.flip()
+    game_window.blit(score2_surface, score2_rect)
 
 
 # Main logic
@@ -131,14 +146,22 @@ while True:
         # Whenever a key is pressed down
         elif event.type == pygame.KEYDOWN:
             # W -> Up; S -> Down; A -> Left; D -> Right
-            if event.key == pygame.K_UP or event.key == ord('w'):
+            if event.key == pygame.K_UP:
                 change_to = 'UP'
-            if event.key == pygame.K_DOWN or event.key == ord('s'):
+            if event.key == pygame.K_DOWN:
                 change_to = 'DOWN'
-            if event.key == pygame.K_LEFT or event.key == ord('a'):
+            if event.key == pygame.K_LEFT:
                 change_to = 'LEFT'
-            if event.key == pygame.K_RIGHT or event.key == ord('d'):
+            if event.key == pygame.K_RIGHT:
                 change_to = 'RIGHT'
+            if event.key == ord('w'):
+                change_to2 = 'UP'
+            if event.key == ord('s'):
+                change_to2 = 'DOWN'
+            if event.key == ord('a'):
+                change_to2 = 'LEFT'
+            if event.key == ord('d'):
+                change_to2 = 'RIGHT'
             # Esc -> Create event to quit the game
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
@@ -146,7 +169,7 @@ while True:
             if event.key == pygame.K_p:
                 pause()
 
-            if event.key == pygame.K_SPACE:
+            if event.key == ord('/'):
                 bullet_spawn = True
                 if direction == 'UP':
                     bullet_pos[0] = snake_pos[0]
@@ -165,6 +188,25 @@ while True:
                     bullet_pos[1] = snake_pos[1]    
                     bullet_direction = 'RIGHT'  
 
+            if event.key == pygame.K_SPACE:
+                bullet2_spawn = True
+                if direction == 'UP':
+                    bullet2_pos[0] = snake2_pos[0]
+                    bullet2_pos[1] = snake2_pos[1] - 20
+                    bullet2_direction = 'UP'
+                if direction == 'DOWN':
+                    bullet2_pos[0] = snake2_pos[0]
+                    bullet2_pos[1] = snake2_pos[1] + 20
+                    bullet2_direction = 'DOWN'
+                if direction == 'LEFT':
+                    bullet2_pos[0] = snake2_pos[0] - 20
+                    bullet2_pos[1] = snake2_pos[1]
+                    bullet2_direction = 'LEFT'
+                if direction == 'RIGHT':
+                    bullet2_pos[0] = snake2_pos[0] + 20
+                    bullet2_pos[1] = snake2_pos[1]    
+                    bullet2_direction = 'RIGHT'  
+
     # Making sure the snake cannot move in the opposite direction instantaneously
     if change_to == 'UP' and direction != 'DOWN':
         direction = 'UP'
@@ -175,7 +217,16 @@ while True:
     if change_to == 'RIGHT' and direction != 'LEFT':
         direction = 'RIGHT'
 
-    # Moving the snake
+    if change_to2 == 'UP' and direction2 != 'DOWN':
+        direction2 = 'UP'
+    if change_to2 == 'DOWN' and direction2 != 'UP':
+        direction2 = 'DOWN'
+    if change_to2 == 'LEFT' and direction2 != 'RIGHT':
+        direction2 = 'LEFT'
+    if change_to2 == 'RIGHT' and direction2 != 'LEFT':
+        direction2 = 'RIGHT'
+
+    # Moving the first snake
     if direction == 'UP':
         snake_pos[1] -= 10
     if direction == 'DOWN':
@@ -184,6 +235,16 @@ while True:
         snake_pos[0] -= 10
     if direction == 'RIGHT':
         snake_pos[0] += 10
+
+    # Moving the second snake
+    if direction2 == 'UP':
+        snake2_pos[1] -= 10
+    if direction2 == 'DOWN':
+        snake2_pos[1] += 10
+    if direction2 == 'LEFT':
+        snake2_pos[0] -= 10
+    if direction2 == 'RIGHT':
+        snake2_pos[0] += 10
 
     if bullet_direction == 'UP':
         bullet_pos[1] -= 10
@@ -194,13 +255,30 @@ while True:
     if bullet_direction == 'RIGHT':
         bullet_pos[0] += 10
 
+    if bullet2_direction == 'UP':
+        bullet2_pos[1] -= 10
+    if bullet2_direction == 'DOWN':
+        bullet2_pos[1] += 10
+    if bullet2_direction == 'LEFT':
+        bullet2_pos[0] -= 10
+    if bullet2_direction == 'RIGHT':
+        bullet2_pos[0] += 10
+
     # Snake body growing mechanism
     snake_body.insert(0, list(snake_pos))
+    snake2_body.insert(0, list(snake2_pos))
+
     if (snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]) or (bullet_pos[0] == food_pos[0] and bullet_pos[1] == food_pos[1]):
-        score += 1
+        snake_1_score += 1
         food_spawn = False
     else:
         snake_body.pop()
+
+    if (snake2_pos[0] == food_pos[0] and snake2_pos[1] == food_pos[1]) or (bullet2_pos[0] == food_pos[0] and bullet2_pos[1] == food_pos[1]):
+        snake_2_score += 1
+        food_spawn = False
+    else:
+        snake2_body.pop()
 
     # Spawning food on the screen
     if not food_spawn:
@@ -215,6 +293,12 @@ while True:
         # xy-coordinate -> .Rect(x, y, size_x, size_y)
         pygame.draw.rect(game_window, green, pygame.Rect(pos[0], pos[1], 10, 10))
 
+    for pos in snake2_body:
+        # Snake body
+        # .draw.rect(play_surface, color, xy-coordinate)
+        # xy-coordinate -> .Rect(x, y, size_x, size_y)
+        pygame.draw.rect(game_window, blue, pygame.Rect(pos[0], pos[1], 10, 10))
+
     # Snake food
     pygame.draw.rect(game_window, white, pygame.Rect(food_pos[0], food_pos[1], 10, 10))
     
@@ -222,12 +306,20 @@ while True:
     if bullet_spawn:
         pygame.draw.rect(game_window, red, pygame.Rect(bullet_pos[0], bullet_pos[1], 10, 10))
 
+    if bullet2_spawn:
+        pygame.draw.rect(game_window, yellow, pygame.Rect(bullet2_pos[0], bullet2_pos[1], 10, 10))
+
     # Game Over conditions
     # Getting out of bounds
     if snake_pos[0] < 0 or snake_pos[0] > frame_size_x-10:
         game_over()
     if snake_pos[1] < 0 or snake_pos[1] > frame_size_y-10:
         game_over()
+
+    if snake2_pos[0] < 0 or snake2_pos[0] > frame_size_x-10:
+        game_over()
+    if snake2_pos[1] < 0 or snake2_pos[1] > frame_size_y-10:
+        game_over()        
 
     if bullet_pos[0] < 0 or bullet_pos[0] > frame_size_x-10:
         bullet_spawn = False
@@ -239,7 +331,10 @@ while True:
         if snake_pos[0] == block[0] and snake_pos[1] == block[1]:
             game_over()
 
-    # show_score(1, white, 'consolas', 20)
+    for block in snake2_body[1:]:
+        if snake2_pos[0] == block[0] and snake2_pos[1] == block[1]:
+            game_over()
+    show_score(1, white, 'consolas', 17)
     # Refresh game screen
     pygame.display.update()
     # Refresh rate
