@@ -1,5 +1,6 @@
-# Snake Eater
-A snake game written in Python using the Pygame library.
+# Snake Eater (Remix)
+
+This is a remix of a snake game written in Python by [rajatdiptabiswas](https://github.com/rajatdiptabiswas) using the Pygame library. Two snakes duke it out to see who can get the biggest. 
 
 
 ## Installing
@@ -14,25 +15,10 @@ pip3 install pygame
 ## Running the application
 Download the source code from the repository and run the file just as any other Python script (.py) file.
 ```
-python3 Snake\ Game.py
+python3 Snake\ Game.py <difficulty>
 ```
 
-The `difficulty` variable can be changed with the values provided in the comment to set the difficulty level.
-
-The rest of the code is properly commented and self explanatory. Tweaks can be made to change the play style or visuals of the game.
-
-
-## Screenshots
-
-![1](https://user-images.githubusercontent.com/32998741/33873439-27f635b2-df45-11e7-8fc1-f7812f17447a.png)
-*Written using PyCharm*
-
-![2](https://user-images.githubusercontent.com/32998741/33873437-2780ed2a-df45-11e7-9776-b1f151fa4e02.png)
-*Active game screen*
-
-![3](https://user-images.githubusercontent.com/32998741/33873440-28647360-df45-11e7-8291-b82d5646352f.png)
-*Game over screen*
-
+`<difficulty>` is a parameter that changes the tick rate of the game. If you have a higher difficulty, the tick rate increases, and consequently the snakes get faster, which makes the game more difficult. 
 
 ## Prerequisites
 * [Python](https://www.python.org)
@@ -42,8 +28,7 @@ The rest of the code is properly commented and self explanatory. Tweaks can be m
 ## Authors
 
 * **Rajat Dipta Biswas** - *Initial work*
-
-See also the list of [contributors](https://github.com/rajatdiptabiswas/snake-pygame/graphs/contributors) who participated in this project.
+* **Mikhail Dmitrienko** - *Added second snake*
 
 ## Acknowledgements
 * [Pygame Documentations](https://www.pygame.org/docs/)
